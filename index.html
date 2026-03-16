@@ -36,7 +36,7 @@
             margin: 0 auto;
         }
 
-        /* 标题样式：修改了底边距以保持与下方卡片的合理距离 */
+        /* 标题样式 */
         .page-title {
             text-align: center;
             font-size: 1.8rem;
@@ -143,7 +143,7 @@
             margin-top: 2px;
         }
 
-        /* 输入框组合：修改为居左对齐 */
+        /* 输入框组合：居左对齐 */
         .input-wrapper {
             display: flex;
             align-items: center;
@@ -162,7 +162,7 @@
                 box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.15);
                 background-color: #fff;
             }
-            /* text-align: left 确保数值居左 */
+
             .input-wrapper input {
                 flex: 1;
                 min-width: 0;
@@ -203,10 +203,23 @@
             align-items: center;
             gap: 4px;
         }
+            .btn-outline:hover { background-color: #fef2f2; }
 
-            .btn-outline:hover {
-                background-color: #fef2f2;
-            }
+        .btn-outline-primary {
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: 1px solid var(--primary-color);
+            background-color: transparent;
+            color: var(--primary-color);
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+            .btn-outline-primary:hover { background-color: #eff6ff; }
 
         /* 排名与结果展示 */
         .rank-badge {
@@ -221,166 +234,94 @@
             color: white;
         }
 
-        .badge-1 {
-            background: linear-gradient(135deg, #fbbf24, #f59e0b);
-            box-shadow: 0 2px 4px rgba(245,158,11,0.3);
-        }
+        .badge-1 { background: linear-gradient(135deg, #fbbf24, #f59e0b); box-shadow: 0 2px 4px rgba(245,158,11,0.3); }
+        .badge-2 { background: linear-gradient(135deg, #cbd5e1, #94a3b8); box-shadow: 0 2px 4px rgba(148,163,184,0.3); }
+        .badge-3 { background: linear-gradient(135deg, #fdba74, #ea580c); box-shadow: 0 2px 4px rgba(234,88,12,0.3); }
+        .badge-other { background-color: #e2e8f0; color: #475569; }
+        .badge-dash { background-color: transparent; color: #94a3b8; box-shadow: none; font-weight: normal; }
 
-        .badge-2 {
-            background: linear-gradient(135deg, #cbd5e1, #94a3b8);
-            box-shadow: 0 2px 4px rgba(148,163,184,0.3);
-        }
-
-        .badge-3 {
-            background: linear-gradient(135deg, #fdba74, #ea580c);
-            box-shadow: 0 2px 4px rgba(234,88,12,0.3);
-        }
-
-        .badge-other {
-            background-color: #e2e8f0;
-            color: #475569;
-        }
-
-        .badge-dash {
-            background-color: transparent;
-            color: #94a3b8;
-            box-shadow: none;
-            font-weight: normal;
-        }
-
-        .stock-name {
-            font-weight: 600;
-            color: #0f172a;
-            font-size: 0.95rem;
-        }
-
-        .final-score-col {
-            background-color: #eff6ff !important;
-            border-left: 2px solid #bfdbfe;
-            border-right: 2px solid #bfdbfe;
-        }
-
-        .final-score {
-            font-size: 1.1rem;
-            font-weight: 700;
-            color: var(--primary-color);
-        }
+        .stock-name { font-weight: 600; color: #0f172a; font-size: 0.95rem; }
+        .final-score-col { background-color: #eff6ff !important; border-left: 2px solid #bfdbfe; border-right: 2px solid #bfdbfe; }
+        .final-score { font-size: 1.1rem; font-weight: 700; color: var(--primary-color); }
 
         /* 全局悬浮提示框 (Tooltip) */
-        .tooltip-container {
-            cursor: help;
-        }
-
-            .tooltip-container .final-score {
-                border-bottom: 2px dashed #93c5fd;
-                padding-bottom: 0px;
-                transition: color 0.2s;
-                display: inline-block;
-            }
-
-            .tooltip-container:hover .final-score {
-                color: #1d4ed8;
-            }
+        .tooltip-container { cursor: help; }
+        .tooltip-container .final-score { border-bottom: 2px dashed #93c5fd; padding-bottom: 0px; transition: color 0.2s; display: inline-block; }
+        .tooltip-container:hover .final-score { color: #1d4ed8; }
 
         #globalTooltip {
-            position: fixed;
-            background: #1e293b;
-            color: #f8fafc;
-            padding: 12px 16px;
-            border-radius: 8px;
-            min-width: 250px;
-            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
-            z-index: 9999;
-            pointer-events: none;
-            opacity: 0;
-            visibility: hidden;
-            transform: translate(-50%, -100%);
-            margin-top: -5px;
-            transition: opacity 0.2s ease, margin-top 0.2s ease;
-            text-align: left;
+            position: fixed; background: #1e293b; color: #f8fafc; padding: 12px 16px; border-radius: 8px;
+            min-width: 250px; box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+            z-index: 9999; pointer-events: none; opacity: 0; visibility: hidden;
+            transform: translate(-50%, -100%); margin-top: -5px; transition: opacity 0.2s ease, margin-top 0.2s ease; text-align: left;
         }
-
-            #globalTooltip.show {
-                opacity: 1;
-                visibility: visible;
-                margin-top: -10px;
-            }
-
-            #globalTooltip::after {
-                content: '';
-                position: absolute;
-                top: 100%;
-                left: 50%;
-                margin-left: -6px;
-                border-width: 6px;
-                border-style: solid;
-                border-color: #1e293b transparent transparent transparent;
-            }
+        #globalTooltip.show { opacity: 1; visibility: visible; margin-top: -10px; }
+        #globalTooltip::after { content: ''; position: absolute; top: 100%; left: 50%; margin-left: -6px; border-width: 6px; border-style: solid; border-color: #1e293b transparent transparent transparent; }
 
         /* 胶囊选项卡 */
-        .tabs {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 6px;
-            margin-bottom: 12px;
+        .tabs { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 12px; }
+        .tab { padding: 6px 14px; cursor: pointer; color: var(--text-muted); font-weight: 600; font-size: 0.85rem; background: #f1f5f9; border-radius: 9999px; transition: all 0.2s ease; border: 1px solid transparent; }
+        .tab:hover { background: #e2e8f0; color: #0f172a; }
+        .tab.active { background: var(--primary-color); color: white; box-shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.2); }
+        .tab-content { animation: fadeUp 0.3s ease-out forwards; }
+        .calc-detail { display: none; }
+        .calc-detail.active { display: block; }
+        .detail-rule-box { background: #f8fafc; padding: 10px 15px; border-radius: 6px; border-left: 4px solid var(--primary-color); margin-bottom: 12px; color: #334155; font-size: 0.85rem; }
+
+        @keyframes fadeUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* 顶部 Toast 提示样式 */
+        #toastNotice {
+            position: fixed; top: 20px; left: 50%; transform: translateX(-50%);
+            background-color: #10b981; color: white; padding: 12px 24px; border-radius: 8px;
+            box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05);
+            font-weight: 600; font-size: 0.95rem; display: flex; align-items: center; gap: 8px;
+            opacity: 0; visibility: hidden; transition: all 0.3s ease; z-index: 10000;
         }
+        #toastNotice.show { opacity: 1; visibility: visible; top: 40px; }
 
-        .tab {
-            padding: 6px 14px;
-            cursor: pointer;
-            color: var(--text-muted);
-            font-weight: 600;
-            font-size: 0.85rem;
-            background: #f1f5f9;
-            border-radius: 9999px;
-            transition: all 0.2s ease;
-            border: 1px solid transparent;
+        /* --- 优化后的：二次确认修改内容弹窗样式 (极其紧凑) --- */
+        .modal-overlay {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(15, 23, 42, 0.6); z-index: 10000; align-items: center; justify-content: center;
+            backdrop-filter: blur(3px); opacity: 0; transition: opacity 0.2s ease;
         }
-
-            .tab:hover {
-                background: #e2e8f0;
-                color: #0f172a;
-            }
-
-            .tab.active {
-                background: var(--primary-color);
-                color: white;
-                box-shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.2);
-            }
-
-        .tab-content {
-            animation: fadeUp 0.3s ease-out forwards;
+        .modal-overlay.show { display: flex; opacity: 1; }
+        .modal-box {
+            background: white; width: 90%; max-width: 440px; padding: 20px; border-radius: 12px;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            transform: scale(0.95); transition: transform 0.2s ease; text-align: left;
+            display: flex; flex-direction: column; gap: 10px; /* 进一步缩小间距 */
         }
-
-        .calc-detail {
-            display: none;
+        .modal-overlay.show .modal-box { transform: scale(1); }
+        .modal-title { font-size: 1.1rem; font-weight: 700; color: #0f172a; margin: 0; display: flex; align-items: center; gap: 6px; }
+        .modal-content { color: #475569; font-size: 0.9rem; line-height: 1.4; }
+        
+        .diff-list {
+            list-style: none; padding: 0; margin: 0; max-height: 200px; overflow-y: auto;
+            background: #f8fafc; border-radius: 6px; padding: 6px 12px; border: 1px solid #e2e8f0; font-size: 0.85rem;
         }
-
-            .calc-detail.active {
-                display: block;
-            }
-
-        .detail-rule-box {
-            background: #f8fafc;
-            padding: 10px 15px;
-            border-radius: 6px;
-            border-left: 4px solid var(--primary-color);
-            margin-bottom: 12px;
-            color: #334155;
-            font-size: 0.85rem;
+        .diff-list li { 
+            padding: 5px 0; border-bottom: 1px dashed #e2e8f0; 
+            display: flex; align-items: center; justify-content: space-between; 
         }
-
-        @keyframes fadeUp {
-            from {
-                opacity: 0;
-                transform: translateY(10px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
+        .diff-list li:last-child { border-bottom: none; }
+        
+        /* 紧凑对齐的修改项结构 */
+        .diff-bank-name { font-weight: 600; color: #334155; display: flex; align-items: center; gap: 6px; }
+        .diff-indicator { font-size: 0.75rem; color: #64748b; background: #e2e8f0; padding: 1px 5px; border-radius: 4px; font-weight: normal; }
+        
+        /* 使用等宽字体，数字对齐更专业 */
+        .diff-values { display: flex; align-items: center; gap: 6px; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; font-size: 0.9rem;}
+        .diff-old { text-decoration: line-through; color: #ef4444; }
+        .diff-new { font-weight: 700; color: #10b981; }
+        
+        .modal-actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 8px; }
+        .btn-modal-cancel { padding: 6px 16px; border-radius: 6px; font-size: 0.9rem; font-weight: 600; cursor: pointer; transition: all 0.2s ease; border: 1px solid #cbd5e1; background-color: #f1f5f9; color: #475569; }
+        .btn-modal-cancel:hover { background-color: #e2e8f0; }
+        .btn-modal-confirm { padding: 6px 16px; border-radius: 6px; font-size: 0.9rem; font-weight: 600; cursor: pointer; transition: all 0.2s ease; border: none; background-color: var(--primary-color); color: white; box-shadow: 0 4px 6px -1px rgba(37,99,235,0.2); }
+        .btn-modal-confirm:hover { background-color: var(--primary-hover); }
+        .btn-modal-confirm:disabled { background-color: #94a3b8; cursor: not-allowed; box-shadow: none; }
     </style>
 </head>
 <body>
@@ -390,10 +331,16 @@
         <div class="card">
             <div class="section-header">
                 <h2 class="section-title">📊 1. 核心指标录入区</h2>
-                <button class="btn-outline" onclick="resetToExample()">
-                    <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
-                    恢复默认数据
-                </button>
+                <div style="display: flex; gap: 10px;">
+                    <button class="btn-outline-primary" onclick="openSaveConfirmModal()">
+                        <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"></path></svg>
+                        保存为默认值
+                    </button>
+                    <button class="btn-outline" onclick="resetToExample()">
+                        <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
+                        恢复默认数据
+                    </button>
+                </div>
             </div>
             <div class="table-responsive">
                 <table class="data-input" id="inputTable">
@@ -438,10 +385,30 @@
     </div>
 
     <div id="globalTooltip"></div>
+    
+    <div id="toastNotice">
+        <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+        <span>保存成功！下次打开将自动加载此数据。</span>
+    </div>
+
+    <div class="modal-overlay" id="saveConfirmModal">
+        <div class="modal-box">
+            <h3 class="modal-title">
+                <svg width="18" height="18" fill="none" stroke="var(--primary-color)" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"></path></svg>
+                确认覆盖默认值？
+            </h3>
+            <div class="modal-content" id="saveConfirmContent">
+                </div>
+            <div class="modal-actions">
+                <button class="btn-modal-cancel" onclick="closeSaveConfirmModal()">取消</button>
+                <button class="btn-modal-confirm" id="btnConfirmSave" onclick="executeSetAsDefault()">保存修改</button>
+            </div>
+        </div>
+    </div>
 
     <script>
-        // --- 1. 初始示例数据 ---
-        const initialBankData = [
+        // --- 1. 系统出厂数据 ---
+        const systemInitialData = [
             { name: "工商银行", data: { dividend: 4.45, pb: 0.00, provision: 214.91, growth: 0.79, pe: 0.00, epsStability: 0.05348 } },
             { name: "农业银行", data: { dividend: 4.53, pb: 0.00, provision: 299.61, growth: 4.56, pe: 0.00, epsStability: 0.09184 } },
             { name: "建设银行", data: { dividend: 4.58, pb: 0.00, provision: 233.60, growth: 0.91, pe: 0.00, epsStability: 0.08700 } },
@@ -460,10 +427,21 @@
             { key: "epsStability", name: "EPS稳定性", weight: 0.05, unit: "(变异系数)", higherBetter: false }
         ];
 
-        let currentBankData = JSON.parse(JSON.stringify(initialBankData));
+        // --- 3. 初始化加载逻辑 (引入 LocalStorage) ---
+        let defaultBankData = JSON.parse(JSON.stringify(systemInitialData));
+        
+        try {
+            const savedData = localStorage.getItem('bankQuantToolDefaults');
+            if (savedData) {
+                defaultBankData = JSON.parse(savedData);
+            }
+        } catch(e) {
+            console.warn("无法读取本地存储数据");
+        }
+
+        let currentBankData = JSON.parse(JSON.stringify(defaultBankData));
         window.tooltipDataMap = {};
 
-        // --- 3. 初始化 ---
         function initializePage() {
             renderResultHeader();
             renderInputTable();
@@ -581,7 +559,7 @@
             document.querySelectorAll('.calc-detail').forEach((content, i) => { content.classList.toggle('active', i === index); });
         }
 
-        // --- 5. 核心计算与渲染 ---
+        // --- 4. 核心计算与渲染 ---
         function calculateScores() {
             const allScores = {};
             indicators.forEach(ind => {
@@ -631,7 +609,6 @@
             renderCalculationDetails(allScores);
         }
 
-        // --- 悬浮提示框 (Tooltip) 逻辑 ---
         function showTooltip(event, bankName) {
             const tooltip = document.getElementById('globalTooltip');
             tooltip.innerHTML = window.tooltipDataMap[bankName];
@@ -752,10 +729,82 @@
             });
         }
 
+        // --- 5. 数据持久化与弹窗逻辑 ---
+        
+        function openSaveConfirmModal() {
+            let diffs = [];
+            
+            // 遍历找出所有有修改的项
+            currentBankData.forEach((currentBank) => {
+                const defaultBank = defaultBankData.find(b => b.name === currentBank.name);
+                indicators.forEach(ind => {
+                    const currentVal = currentBank.data[ind.key];
+                    const defaultVal = defaultBank.data[ind.key];
+                    
+                    if (currentVal !== defaultVal) {
+                        const decimals = ind.key === 'epsStability' ? 5 : 2;
+                        let cStr = currentVal.toFixed(decimals) + (ind.unit === '%' ? '%' : '');
+                        let dStr = defaultVal.toFixed(decimals) + (ind.unit === '%' ? '%' : '');
+                        
+                        // 生成紧凑的一行修改记录
+                        diffs.push(`
+                            <li>
+                                <div class="diff-bank-name">
+                                    ${currentBank.name}
+                                    <span class="diff-indicator">${ind.name}</span>
+                                </div>
+                                <div class="diff-values">
+                                    <span class="diff-old">${dStr}</span>
+                                    <svg width="12" height="12" fill="none" stroke="#94a3b8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+                                    <span class="diff-new">${cStr}</span>
+                                </div>
+                            </li>
+                        `);
+                    }
+                });
+            });
+
+            const contentDiv = document.getElementById('saveConfirmContent');
+            const confirmBtn = document.getElementById('btnConfirmSave');
+
+            if (diffs.length === 0) {
+                contentDiv.innerHTML = `<p style="text-align:center; padding: 10px 0; margin-bottom: 0; color: #64748b;">✅ 您尚未修改任何数据，无需保存。</p>`;
+                confirmBtn.disabled = true;
+            } else {
+                contentDiv.innerHTML = `<p style="margin-bottom: 8px;">以下修改将被覆盖至您的本地默认设置：</p><ul class="diff-list">${diffs.join('')}</ul>`;
+                confirmBtn.disabled = false;
+            }
+
+            document.getElementById('saveConfirmModal').classList.add('show');
+        }
+
+        function closeSaveConfirmModal() {
+            document.getElementById('saveConfirmModal').classList.remove('show');
+        }
+
+        function executeSetAsDefault() {
+            defaultBankData = JSON.parse(JSON.stringify(currentBankData));
+            try {
+                localStorage.setItem('bankQuantToolDefaults', JSON.stringify(defaultBankData));
+                closeSaveConfirmModal();
+                showToast();
+            } catch(e) {
+                alert("保存失败！可能您的浏览器禁用了本地存储功能。");
+            }
+        }
+
         function resetToExample() {
-            currentBankData = JSON.parse(JSON.stringify(initialBankData));
+            currentBankData = JSON.parse(JSON.stringify(defaultBankData));
             renderInputTable();
             calculateScores();
+        }
+
+        function showToast() {
+            const toast = document.getElementById('toastNotice');
+            toast.classList.add('show');
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
         }
 
         window.onload = initializePage;
