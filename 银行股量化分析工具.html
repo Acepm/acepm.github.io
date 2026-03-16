@@ -1,0 +1,1084 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>银行股量化分析工具</title>
+    <style>
+        :root {
+            --primary-color: #2563eb;
+            --primary-hover: #1d4ed8;
+            --danger-color: #ef4444;
+            --bg-color: #f8fafc;
+            --card-bg: #ffffff;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --border-color: #e2e8f0;
+            --table-header-bg: #f1f5f9;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            line-height: 1.5;
+            padding: 12px 10px;
+        }
+
+        .container {
+            max-width: 1280px;
+            margin: 0 auto;
+        }
+
+        /* 标题样式 */
+        .page-title {
+            text-align: center;
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #0f172a;
+            margin-bottom: 24px;
+            letter-spacing: -0.02em;
+        }
+
+            .page-title span {
+                background: linear-gradient(135deg, #2563eb, #38bdf8);
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+            }
+
+        /* 卡片样式 */
+        .card {
+            background: var(--card-bg);
+            padding: 16px 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+            margin-bottom: 12px;
+            border: 1px solid rgba(226, 232, 240, 0.8);
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .section-title {
+            font-size: 1.15rem;
+            font-weight: 600;
+            color: #0f172a;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin: 0 0 12px 0;
+        }
+
+        .section-header .section-title {
+            margin-bottom: 0;
+        }
+
+        /* 表格容器与单元格 */
+        .table-responsive {
+            width: 100%;
+            overflow-x: auto;
+            border-radius: 6px;
+            border: 1px solid var(--border-color);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 800px;
+        }
+
+        th, td {
+            padding: 8px 10px;
+            text-align: center;
+            border-bottom: 1px solid var(--border-color);
+            font-size: 0.9rem;
+        }
+
+        th {
+            background-color: var(--table-header-bg);
+            font-weight: 600;
+            color: #475569;
+        }
+
+        tbody tr {
+            transition: background-color 0.15s ease;
+        }
+
+            tbody tr:hover {
+                background-color: #f8fafc;
+            }
+
+            tbody tr:last-child td {
+                border-bottom: none;
+            }
+
+        /* 指标说明列 */
+        .indicator-info {
+            text-align: left !important;
+            min-width: 200px;
+        }
+
+        .indicator-name {
+            font-weight: 600;
+            color: #334155;
+            font-size: 0.95rem;
+        }
+
+        .indicator-hint {
+            display: block;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-top: 2px;
+        }
+
+        /* 输入框组合：居左对齐 */
+        .input-wrapper {
+            display: flex;
+            align-items: center;
+            background-color: #f8fafc;
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+            margin: 0 auto;
+            width: 100%;
+            max-width: 90px;
+            overflow: hidden;
+        }
+
+            .input-wrapper:focus-within {
+                border-color: var(--primary-color);
+                box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.15);
+                background-color: #fff;
+            }
+
+            .input-wrapper input {
+                flex: 1;
+                min-width: 0;
+                border: none;
+                background: transparent;
+                padding: 6px 4px 6px 10px;
+                font-size: 0.95rem;
+                color: #0f172a;
+                outline: none;
+                text-align: left;
+            }
+
+            .input-wrapper .suffix {
+                padding-right: 8px;
+                color: #64748b;
+                font-weight: 600;
+                user-select: none;
+                font-size: 0.85rem;
+            }
+
+            .input-wrapper.no-suffix input {
+                text-align: left;
+                padding: 6px 10px;
+            }
+
+        /* 按钮样式 */
+        .btn-outline {
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: 1px solid var(--danger-color);
+            background-color: transparent;
+            color: var(--danger-color);
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+            .btn-outline:hover {
+                background-color: #fef2f2;
+            }
+
+        .btn-outline-primary {
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: 1px solid var(--primary-color);
+            background-color: transparent;
+            color: var(--primary-color);
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+            .btn-outline-primary:hover {
+                background-color: #eff6ff;
+            }
+
+        /* 排名与结果展示 */
+        .rank-badge {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            font-weight: 700;
+            font-size: 0.85rem;
+            color: white;
+        }
+
+        .badge-1 {
+            background: linear-gradient(135deg, #fbbf24, #f59e0b);
+            box-shadow: 0 2px 4px rgba(245,158,11,0.3);
+        }
+
+        .badge-2 {
+            background: linear-gradient(135deg, #cbd5e1, #94a3b8);
+            box-shadow: 0 2px 4px rgba(148,163,184,0.3);
+        }
+
+        .badge-3 {
+            background: linear-gradient(135deg, #fdba74, #ea580c);
+            box-shadow: 0 2px 4px rgba(234,88,12,0.3);
+        }
+
+        .badge-other {
+            background-color: #e2e8f0;
+            color: #475569;
+        }
+
+        .badge-dash {
+            background-color: transparent;
+            color: #94a3b8;
+            box-shadow: none;
+            font-weight: normal;
+        }
+
+        .stock-name {
+            font-weight: 600;
+            color: #0f172a;
+            font-size: 0.95rem;
+        }
+
+        .final-score-col {
+            background-color: #eff6ff !important;
+            border-left: 2px solid #bfdbfe;
+            border-right: 2px solid #bfdbfe;
+        }
+
+        .final-score {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+
+        /* 全局悬浮提示框 (Tooltip) */
+        .tooltip-container {
+            cursor: help;
+        }
+
+            .tooltip-container .final-score {
+                border-bottom: 2px dashed #93c5fd;
+                padding-bottom: 0px;
+                transition: color 0.2s;
+                display: inline-block;
+            }
+
+            .tooltip-container:hover .final-score {
+                color: #1d4ed8;
+            }
+
+        #globalTooltip {
+            position: fixed;
+            background: #1e293b;
+            color: #f8fafc;
+            padding: 12px 16px;
+            border-radius: 8px;
+            min-width: 250px;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+            z-index: 9999;
+            pointer-events: none;
+            opacity: 0;
+            visibility: hidden;
+            transform: translate(-50%, -100%);
+            margin-top: -5px;
+            transition: opacity 0.2s ease, margin-top 0.2s ease;
+            text-align: left;
+        }
+
+            #globalTooltip.show {
+                opacity: 1;
+                visibility: visible;
+                margin-top: -10px;
+            }
+
+            #globalTooltip::after {
+                content: '';
+                position: absolute;
+                top: 100%;
+                left: 50%;
+                margin-left: -6px;
+                border-width: 6px;
+                border-style: solid;
+                border-color: #1e293b transparent transparent transparent;
+            }
+
+        /* 胶囊选项卡 */
+        .tabs {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-bottom: 12px;
+        }
+
+        .tab {
+            padding: 6px 14px;
+            cursor: pointer;
+            color: var(--text-muted);
+            font-weight: 600;
+            font-size: 0.85rem;
+            background: #f1f5f9;
+            border-radius: 9999px;
+            transition: all 0.2s ease;
+            border: 1px solid transparent;
+        }
+
+            .tab:hover {
+                background: #e2e8f0;
+                color: #0f172a;
+            }
+
+            .tab.active {
+                background: var(--primary-color);
+                color: white;
+                box-shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.2);
+            }
+
+        .tab-content {
+            animation: fadeUp 0.3s ease-out forwards;
+        }
+
+        .calc-detail {
+            display: none;
+        }
+
+            .calc-detail.active {
+                display: block;
+            }
+
+        .detail-rule-box {
+            background: #f8fafc;
+            padding: 10px 15px;
+            border-radius: 6px;
+            border-left: 4px solid var(--primary-color);
+            margin-bottom: 12px;
+            color: #334155;
+            font-size: 0.85rem;
+        }
+
+        @keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* 顶部 Toast 提示样式 */
+        #toastNotice {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #10b981;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05);
+            font-weight: 600;
+            font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            z-index: 10000;
+        }
+
+            #toastNotice.show {
+                opacity: 1;
+                visibility: visible;
+                top: 40px;
+            }
+
+        /* --- 优化后的：二次确认修改内容弹窗样式 (极其紧凑) --- */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(15, 23, 42, 0.6);
+            z-index: 10000;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(3px);
+            opacity: 0;
+            transition: opacity 0.2s ease;
+        }
+
+            .modal-overlay.show {
+                display: flex;
+                opacity: 1;
+            }
+
+        .modal-box {
+            background: white;
+            width: 90%;
+            max-width: 440px;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            transform: scale(0.95);
+            transition: transform 0.2s ease;
+            text-align: left;
+            display: flex;
+            flex-direction: column;
+            gap: 10px; /* 进一步缩小间距 */
+        }
+
+        .modal-overlay.show .modal-box {
+            transform: scale(1);
+        }
+
+        .modal-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #0f172a;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .modal-content {
+            color: #475569;
+            font-size: 0.9rem;
+            line-height: 1.4;
+        }
+
+        .diff-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            max-height: 200px;
+            overflow-y: auto;
+            background: #f8fafc;
+            border-radius: 6px;
+            padding: 6px 12px;
+            border: 1px solid #e2e8f0;
+            font-size: 0.85rem;
+        }
+
+            .diff-list li {
+                padding: 5px 0;
+                border-bottom: 1px dashed #e2e8f0;
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+            }
+
+                .diff-list li:last-child {
+                    border-bottom: none;
+                }
+
+        /* 紧凑对齐的修改项结构 */
+        .diff-bank-name {
+            font-weight: 600;
+            color: #334155;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .diff-indicator {
+            font-size: 0.75rem;
+            color: #64748b;
+            background: #e2e8f0;
+            padding: 1px 5px;
+            border-radius: 4px;
+            font-weight: normal;
+        }
+
+        /* 使用等宽字体，数字对齐更专业 */
+        .diff-values {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+            font-size: 0.9rem;
+        }
+
+        .diff-old {
+            text-decoration: line-through;
+            color: #ef4444;
+        }
+
+        .diff-new {
+            font-weight: 700;
+            color: #10b981;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+            margin-top: 8px;
+        }
+
+        .btn-modal-cancel {
+            padding: 6px 16px;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: 1px solid #cbd5e1;
+            background-color: #f1f5f9;
+            color: #475569;
+        }
+
+            .btn-modal-cancel:hover {
+                background-color: #e2e8f0;
+            }
+
+        .btn-modal-confirm {
+            padding: 6px 16px;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: none;
+            background-color: var(--primary-color);
+            color: white;
+            box-shadow: 0 4px 6px -1px rgba(37,99,235,0.2);
+        }
+
+            .btn-modal-confirm:hover {
+                background-color: var(--primary-hover);
+            }
+
+            .btn-modal-confirm:disabled {
+                background-color: #94a3b8;
+                cursor: not-allowed;
+                box-shadow: none;
+            }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="page-title">🏦 银行股量化<span>分析工具</span></h1>
+
+        <div class="card">
+            <div class="section-header">
+                <h2 class="section-title">📊 1. 核心指标录入区</h2>
+                <div style="display: flex; gap: 10px;">
+                    <button class="btn-outline-primary" onclick="openSaveConfirmModal()">
+                        <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"></path></svg>
+                        保存为默认值
+                    </button>
+                    <button class="btn-outline" onclick="resetToExample()">
+                        <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
+                        恢复默认数据
+                    </button>
+                </div>
+            </div>
+            <div class="table-responsive">
+                <table class="data-input" id="inputTable">
+                    <thead>
+                        <tr>
+                            <th>指标名称与规则</th>
+                            <th>工商银行</th>
+                            <th>农业银行</th>
+                            <th>建设银行</th>
+                            <th>中国银行</th>
+                            <th>邮储银行</th>
+                            <th>交通银行</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2 class="section-title">🏆 2. 综合实力评级榜单</h2>
+            <div class="table-responsive">
+                <table id="finalResultTable">
+                    <thead>
+                        <tr id="resultTableHeader">
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2 class="section-title">🧮 3. 底层数据推演详情</h2>
+            <div class="tabs" id="indicatorTabs">
+            </div>
+            <div class="tab-content" id="tabContent">
+            </div>
+        </div>
+    </div>
+
+    <div id="globalTooltip"></div>
+
+    <div id="toastNotice">
+        <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+        <span>保存成功！下次打开将自动加载此数据。</span>
+    </div>
+
+    <div class="modal-overlay" id="saveConfirmModal">
+        <div class="modal-box">
+            <h3 class="modal-title">
+                <svg width="18" height="18" fill="none" stroke="var(--primary-color)" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"></path></svg>
+                确认覆盖默认值？
+            </h3>
+            <div class="modal-content" id="saveConfirmContent">
+            </div>
+            <div class="modal-actions">
+                <button class="btn-modal-cancel" onclick="closeSaveConfirmModal()">取消</button>
+                <button class="btn-modal-confirm" id="btnConfirmSave" onclick="executeSetAsDefault()">保存修改</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- 1. 系统出厂数据 ---
+        const systemInitialData = [
+            { name: "工商银行", data: { dividend: 4.45, pb: 0.00, provision: 214.91, growth: 0.79, pe: 0.00, epsStability: 0.05348 } },
+            { name: "农业银行", data: { dividend: 4.53, pb: 0.00, provision: 299.61, growth: 4.56, pe: 0.00, epsStability: 0.09184 } },
+            { name: "建设银行", data: { dividend: 4.58, pb: 0.00, provision: 233.60, growth: 0.91, pe: 0.00, epsStability: 0.08700 } },
+            { name: "中国银行", data: { dividend: 4.40, pb: 0.00, provision: 196.60, growth: 2.54, pe: 0.00, epsStability: 0.07947 } },
+            { name: "邮储银行", data: { dividend: 4.61, pb: 0.00, provision: 286.15, growth: -0.68, pe: 0.00, epsStability: 0.06858 } },
+            { name: "交通银行", data: { dividend: 4.88, pb: 0.00, provision: 201.94, growth: 0.98, pe: 0.00, epsStability: 0.06298 } }
+        ];
+
+        // --- 2. 指标配置 ---
+        const indicators = [
+            { key: "dividend", name: "股息率", weight: 0.40, unit: "%", higherBetter: true },
+            { key: "pb", name: "市净率(PB)", weight: 0.30, unit: "", higherBetter: false },
+            { key: "provision", name: "拨备覆盖率", weight: 0.15, unit: "%", higherBetter: true },
+            { key: "growth", name: "扣非增长率", weight: 0.10, unit: "%", higherBetter: "special", specialRule: (val) => (val >= 0 && val <= 5) ? 10.0 : 5.5 },
+            { key: "pe", name: "PE-TTM", weight: 0.05, unit: "", higherBetter: false },
+            { key: "epsStability", name: "EPS稳定性", weight: 0.05, unit: "(变异系数)", higherBetter: false }
+        ];
+
+        // --- 3. 初始化加载逻辑 (引入 LocalStorage) ---
+        let defaultBankData = JSON.parse(JSON.stringify(systemInitialData));
+
+        try {
+            const savedData = localStorage.getItem('bankQuantToolDefaults');
+            if (savedData) {
+                defaultBankData = JSON.parse(savedData);
+            }
+        } catch (e) {
+            console.warn("无法读取本地存储数据");
+        }
+
+        let currentBankData = JSON.parse(JSON.stringify(defaultBankData));
+        window.tooltipDataMap = {};
+
+        function initializePage() {
+            renderResultHeader();
+            renderInputTable();
+            renderIndicatorTabs();
+            calculateScores();
+        }
+
+        function renderResultHeader() {
+            let html = `
+                        <th style="width: 8%;">综合排名</th>
+                        <th style="width: 12%;">银行简称</th>
+                        <th class="final-score-col" style="width: 14%;">⭐ 加权总分</th>
+                    `;
+            indicators.forEach(ind => {
+                html += `<th>${ind.name}得分</th>`;
+            });
+            document.getElementById('resultTableHeader').innerHTML = html;
+        }
+
+        function renderInputTable() {
+            const tbody = document.querySelector('#inputTable tbody');
+            tbody.innerHTML = '';
+
+            indicators.forEach(ind => {
+                const row = document.createElement('tr');
+                const ruleText = ind.higherBetter === true ? '正向指标 (越大越好)' : (ind.higherBetter === false ? '反向指标 (越小越好)' : '区间指标 (0-5%最佳)');
+                const weightPercent = Math.round(ind.weight * 100);
+
+                row.innerHTML = `<td class="indicator-info">
+                                            <div class="indicator-name">${ind.name} <span style="color:var(--primary-color); font-size:0.85rem;">(权重 ${weightPercent}%)</span></div>
+                                            <span class="indicator-hint">${ruleText}</span>
+                                         </td>`;
+
+                currentBankData.forEach(bank => {
+                    const value = bank.data[ind.key];
+                    const decimals = ind.key === 'epsStability' ? 5 : 2;
+                    const displayValue = value.toFixed(decimals);
+
+                    let inputHtml = '';
+                    if (ind.unit === '%') {
+                        inputHtml = `
+                                    <div class="input-wrapper">
+                                        <input type="text" value="${displayValue}" data-bank="${bank.name}" data-key="${ind.key}" data-decimals="${decimals}" autocomplete="off">
+                                        <span class="suffix">%</span>
+                                    </div>`;
+                    } else {
+                        inputHtml = `
+                                    <div class="input-wrapper no-suffix">
+                                        <input type="text" value="${displayValue}" data-bank="${bank.name}" data-key="${ind.key}" data-decimals="${decimals}" autocomplete="off">
+                                    </div>`;
+                    }
+                    row.innerHTML += `<td>${inputHtml}</td>`;
+                });
+                tbody.appendChild(row);
+            });
+
+            bindInputEvents();
+        }
+
+        function bindInputEvents() {
+            const inputs = document.querySelectorAll('#inputTable input');
+            inputs.forEach(input => {
+                input.addEventListener('input', function () {
+                    let rawValue = this.value;
+                    if (rawValue === '' || rawValue === '-' || rawValue.endsWith('.')) {
+                        updateDataForCalc(this, 0);
+                        return;
+                    }
+                    const numValue = parseFloat(rawValue);
+                    if (!isNaN(numValue)) updateDataForCalc(this, numValue);
+                });
+
+                input.addEventListener('blur', function () {
+                    let rawValue = this.value;
+                    const decimals = parseInt(this.getAttribute('data-decimals'));
+                    let numValue = parseFloat(rawValue);
+                    if (isNaN(numValue)) numValue = 0;
+                    const formattedValue = numValue.toFixed(decimals);
+                    this.value = formattedValue;
+                    updateDataForCalc(this, parseFloat(formattedValue));
+                });
+            });
+        }
+
+        function updateDataForCalc(inputElement, numValue) {
+            const bankName = inputElement.getAttribute('data-bank');
+            const key = inputElement.getAttribute('data-key');
+            const bank = currentBankData.find(b => b.name === bankName);
+            bank.data[key] = numValue;
+            calculateScores();
+        }
+
+        function renderIndicatorTabs() {
+            const tabsContainer = document.getElementById('indicatorTabs');
+            const contentContainer = document.getElementById('tabContent');
+            tabsContainer.innerHTML = '';
+            contentContainer.innerHTML = '';
+
+            indicators.forEach((ind, index) => {
+                const tabButton = document.createElement('div');
+                tabButton.className = 'tab' + (index === 0 ? ' active' : '');
+                tabButton.textContent = ind.name;
+                tabButton.onclick = () => switchTab(index);
+                tabsContainer.appendChild(tabButton);
+
+                const contentDiv = document.createElement('div');
+                contentDiv.className = 'calc-detail' + (index === 0 ? ' active' : '');
+                contentDiv.id = `detail-${ind.key}`;
+                contentContainer.appendChild(contentDiv);
+            });
+        }
+
+        function switchTab(index) {
+            document.querySelectorAll('.tab').forEach((tab, i) => { tab.classList.toggle('active', i === index); });
+            document.querySelectorAll('.calc-detail').forEach((content, i) => { content.classList.toggle('active', i === index); });
+        }
+
+        // --- 4. 核心计算与渲染 ---
+        function calculateScores() {
+            const allScores = {};
+            indicators.forEach(ind => {
+                const values = currentBankData.map(bank => ({ name: bank.name, value: bank.data[ind.key] }));
+
+                if (ind.key === 'growth' && ind.specialRule) {
+                    values.forEach(item => {
+                        item.rawScore = ind.specialRule(item.value);
+                        item.rank = item.rawScore === 10 ? 1 : "-";
+                    });
+                } else {
+                    values.sort((a, b) => ind.higherBetter ? b.value - a.value : a.value - b.value);
+                    values.forEach((item, idx) => {
+                        if (idx === 0) {
+                            item.rank = 1; item.rawScore = 10;
+                        } else {
+                            if (item.value === values[idx - 1].value) {
+                                item.rank = values[idx - 1].rank; item.rawScore = values[idx - 1].rawScore;
+                            } else {
+                                item.rank = idx + 1; item.rawScore = 10 - idx * 0.8;
+                            }
+                        }
+                    });
+                }
+                allScores[ind.key] = values;
+            });
+
+            const bankFinalScores = currentBankData.map(bank => {
+                let weightedTotal = 0;
+                indicators.forEach(ind => {
+                    const scoreObj = allScores[ind.key].find(s => s.name === bank.name);
+                    weightedTotal += scoreObj.rawScore * ind.weight;
+                });
+                return { name: bank.name, totalScore: weightedTotal };
+            });
+
+            bankFinalScores.sort((a, b) => b.totalScore - a.totalScore);
+            bankFinalScores.forEach((bank, idx) => {
+                if (idx > 0 && bank.totalScore === bankFinalScores[idx - 1].totalScore) {
+                    bank.finalRank = bankFinalScores[idx - 1].finalRank;
+                } else {
+                    bank.finalRank = idx + 1;
+                }
+            });
+
+            renderFinalResults(bankFinalScores, allScores);
+            renderCalculationDetails(allScores);
+        }
+
+        function showTooltip(event, bankName) {
+            const tooltip = document.getElementById('globalTooltip');
+            tooltip.innerHTML = window.tooltipDataMap[bankName];
+
+            const rect = event.currentTarget.getBoundingClientRect();
+            tooltip.style.left = (rect.left + rect.width / 2) + 'px';
+            tooltip.style.top = rect.top + 'px';
+
+            tooltip.classList.add('show');
+        }
+
+        function hideTooltip() {
+            document.getElementById('globalTooltip').classList.remove('show');
+        }
+
+        function renderFinalResults(finalScores, allScores) {
+            const tbody = document.querySelector('#finalResultTable tbody');
+            tbody.innerHTML = '';
+
+            finalScores.forEach((bank) => {
+                const row = document.createElement('tr');
+
+                let badgeClass = 'badge-other';
+                if (bank.finalRank === 1) badgeClass = 'badge-1';
+                else if (bank.finalRank === 2) badgeClass = 'badge-2';
+                else if (bank.finalRank === 3) badgeClass = 'badge-3';
+
+                let tooltipHtml = `
+                            <div style="margin-bottom:8px; font-size:1rem; font-weight:600; border-bottom:1px solid #334155; padding-bottom:6px; color:#f8fafc;">
+                                📊 [${bank.name}] 计分推演明细
+                            </div>`;
+
+                let sumExpressionParts = [];
+
+                indicators.forEach(ind => {
+                    const scoreObj = allScores[ind.key].find(s => s.name === bank.name);
+                    const indScore = scoreObj.rawScore;
+                    const weight = ind.weight;
+                    const calcScore = indScore * weight;
+
+                    sumExpressionParts.push(calcScore.toFixed(2));
+
+                    tooltipHtml += `
+                                <div style="display:flex; justify-content:space-between; gap:20px; margin-bottom:4px; font-size:0.85rem;">
+                                    <span style="color:#94a3b8;">${ind.name}得分</span>
+                                    <span>${indScore.toFixed(2)} × ${Math.round(weight * 100)}% = <strong style="color:#fff;">${calcScore.toFixed(2)}</strong></span>
+                                </div>`;
+                });
+
+                const sumExpressionString = sumExpressionParts.join(' + ') + ` = ${bank.totalScore.toFixed(2)}`;
+
+                tooltipHtml += `
+                            <div style="margin-top:10px; padding-top:8px; border-top:1px dashed #475569; font-size: 0.8rem; color: #cbd5e1; word-wrap: break-word; line-height: 1.4;">
+                                <span style="color:#94a3b8; font-weight:600;">加权求和过程：</span><br>
+                                ${sumExpressionString}
+                            </div>
+                            <div style="margin-top:6px; font-weight:700; border-top:1px solid #334155; padding-top:6px; text-align:right; color:#38bdf8; font-size:1rem;">
+                                最终总分 = ${bank.totalScore.toFixed(2)} 分
+                            </div>`;
+
+                window.tooltipDataMap[bank.name] = tooltipHtml;
+
+                let rowHTML = `
+                            <td><span class="rank-badge ${badgeClass}">${bank.finalRank}</span></td>
+                            <td class="stock-name">${bank.name}</td>
+                            <td class="final-score-col tooltip-container" onmouseenter="showTooltip(event, '${bank.name}')" onmouseleave="hideTooltip()">
+                                <span class="final-score">${bank.totalScore.toFixed(2)}</span>
+                            </td>
+                        `;
+
+                indicators.forEach(ind => {
+                    const scoreObj = allScores[ind.key].find(s => s.name === bank.name);
+                    rowHTML += `<td>${scoreObj.rawScore.toFixed(2)}</td>`;
+                });
+
+                row.innerHTML = rowHTML;
+                tbody.appendChild(row);
+            });
+        }
+
+        function renderCalculationDetails(allScores) {
+            indicators.forEach(ind => {
+                const detailDiv = document.getElementById(`detail-${ind.key}`);
+                const scores = allScores[ind.key];
+
+                const sortedForDisplay = [...scores].sort((a, b) => {
+                    if (a.rank === b.rank) return a.name.localeCompare(b.name, 'zh-CN');
+                    if (a.rank === "-") return 1;
+                    if (b.rank === "-") return -1;
+                    return a.rank - b.rank;
+                });
+
+                let detailsHTML = `<div class="detail-rule-box"><strong>💡 评分逻辑：</strong>`;
+                if (ind.key === 'growth') {
+                    detailsHTML += `数值在 0% - 5% 区间内得满分 10 分，其余得 5.5 分。本项权重 ${Math.round(ind.weight * 100)}%。`;
+                } else {
+                    detailsHTML += `${ind.higherBetter ? '正向指标' : '反向指标'}。采用线性插值法，第一名记 10 分，第六名记 6 分 (同分并列得分)。本项权重 ${Math.round(ind.weight * 100)}%。`;
+                }
+                detailsHTML += `</div><div class="table-responsive"><table><thead><tr><th style="width:15%">单项名次</th><th style="width:25%">目标银行</th><th style="width:30%">当前输入数值</th><th style="width:30%">转换得分 (满分10)</th></tr></thead><tbody>`;
+
+                sortedForDisplay.forEach(item => {
+                    const decimals = ind.key === 'epsStability' ? 5 : 2;
+                    let displayValue = item.value.toFixed(decimals);
+                    if (ind.unit === '%') displayValue += '%';
+
+                    let badgeClass = item.rank === 1 ? 'badge-1' : (item.rank === 2 ? 'badge-2' : (item.rank === 3 ? 'badge-3' : 'badge-other'));
+                    if (item.rank === "-") badgeClass = 'badge-dash';
+
+                    detailsHTML += `<tr>
+                                                <td><span class="rank-badge ${badgeClass}">${item.rank}</span></td>
+                                                <td class="stock-name">${item.name}</td>
+                                                <td>${displayValue}</td>
+                                                <td><strong style="color:var(--primary-color); font-size: 1.05rem;">${item.rawScore.toFixed(2)}</strong></td>
+                                            </tr>`;
+                });
+                detailsHTML += `</tbody></table></div>`;
+                detailDiv.innerHTML = detailsHTML;
+            });
+        }
+
+        // --- 5. 数据持久化与弹窗逻辑 ---
+
+        function openSaveConfirmModal() {
+            let diffs = [];
+
+            // 遍历找出所有有修改的项
+            currentBankData.forEach((currentBank) => {
+                const defaultBank = defaultBankData.find(b => b.name === currentBank.name);
+                indicators.forEach(ind => {
+                    const currentVal = currentBank.data[ind.key];
+                    const defaultVal = defaultBank.data[ind.key];
+
+                    if (currentVal !== defaultVal) {
+                        const decimals = ind.key === 'epsStability' ? 5 : 2;
+                        let cStr = currentVal.toFixed(decimals) + (ind.unit === '%' ? '%' : '');
+                        let dStr = defaultVal.toFixed(decimals) + (ind.unit === '%' ? '%' : '');
+
+                        // 生成紧凑的一行修改记录
+                        diffs.push(`
+                                <li>
+                                    <div class="diff-bank-name">
+                                        ${currentBank.name}
+                                        <span class="diff-indicator">${ind.name}</span>
+                                    </div>
+                                    <div class="diff-values">
+                                        <span class="diff-old">${dStr}</span>
+                                        <svg width="12" height="12" fill="none" stroke="#94a3b8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+                                        <span class="diff-new">${cStr}</span>
+                                    </div>
+                                </li>
+                            `);
+                    }
+                });
+            });
+
+            const contentDiv = document.getElementById('saveConfirmContent');
+            const confirmBtn = document.getElementById('btnConfirmSave');
+
+            if (diffs.length === 0) {
+                contentDiv.innerHTML = `<p style="text-align:center; padding: 10px 0; margin-bottom: 0; color: #64748b;">✅ 您尚未修改任何数据，无需保存。</p>`;
+                confirmBtn.disabled = true;
+            } else {
+                contentDiv.innerHTML = `<p style="margin-bottom: 8px;">以下修改将被覆盖至您的本地默认设置：</p><ul class="diff-list">${diffs.join('')}</ul>`;
+                confirmBtn.disabled = false;
+            }
+
+            document.getElementById('saveConfirmModal').classList.add('show');
+        }
+
+        function closeSaveConfirmModal() {
+            document.getElementById('saveConfirmModal').classList.remove('show');
+        }
+
+        function executeSetAsDefault() {
+            defaultBankData = JSON.parse(JSON.stringify(currentBankData));
+            try {
+                localStorage.setItem('bankQuantToolDefaults', JSON.stringify(defaultBankData));
+                closeSaveConfirmModal();
+                showToast();
+            } catch (e) {
+                alert("保存失败！可能您的浏览器禁用了本地存储功能。");
+            }
+        }
+
+        function resetToExample() {
+            currentBankData = JSON.parse(JSON.stringify(defaultBankData));
+            renderInputTable();
+            calculateScores();
+        }
+
+        function showToast() {
+            const toast = document.getElementById('toastNotice');
+            toast.classList.add('show');
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+
+        window.onload = initializePage;
+    </script>
+</body>
+</html>
